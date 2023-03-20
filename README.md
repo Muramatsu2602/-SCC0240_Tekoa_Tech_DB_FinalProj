@@ -8,7 +8,7 @@ Projeto final da disciplina de Base de Dados. Aqui desenvolvemos um SGBD complet
 ## Membros
 
 * 11857323 - Alexandre Britto Gomes
-* 11834331 - Diógenes Silva Pedro
+* 11883476 - Diógenes Silva Pedro
 * 11834331 - João Antônio Misson Milhorim
 * 11819125 - Pedro Augusto Ribeiro Gomes
 * 11796451 - Pedro Kenzo Muramatsu Carmo
