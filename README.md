@@ -1,5 +1,5 @@
 
-![logo](logo.jpg)
+![logo](./logo.png)
 
 
 # TekoaTech: Conectando as Comunidades Indígenas com o Mundo Digital
