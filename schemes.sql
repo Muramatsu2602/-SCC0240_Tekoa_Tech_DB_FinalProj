@@ -1,3 +1,4 @@
+-- Código com os esquemas do banco
 SET TIMEZONE = 'America/Sao_Paulo'
 
 CREATE TABLE FUNCIONARIOS (
@@ -148,12 +149,36 @@ CREATE TABLE FORNECIMENTO_PROJETO (
     CONSTRAINT FK_FORNECIMENTO_PROJETO FOREIGN KEY FORNECIMENTO REFERENCES PROJETO(TITULO) ON DELETE CASCADE
 );
 
+-- Função usada para checar se o trimestre adicionado não está no futuro da data atual, ou seja, quando o ano inserido é o mesmo do ano atual fazemos uma checagem pelo trimestre. Quando o ano é menor que o atual só retornamos o trimestre já inserido
+CREATE OR REPLACE FUNCTION GET_CURRENT_TRIMESTER(ANO INTEGER, TRIMESTRE VARCHAR) RETURNS VARCHAR AS $$
+DECLARE
+    MES_ATUAL INTEGER;
+    ANO_ATUAL INTEGER;
+    TRIMESTRE_ATUAL VARCHAR;
+BEGIN
+    MES_ATUAL := EXTRACT(MONTH FROM CURRENT_DATE)
+    ANO_ATUAL := EXTRACT(YEAR FROM CURRENT_DATE)
+
+    IF ANO == ANO_ATUAL THEN
+        CASE
+            WHEN MES_ATUAL IN (1, 2, 3) THEN TRIMESTRE_ATUAL := '1o';
+            WHEN MES_ATUAL IN (4, 5, 6) THEN TRIMESTRE_ATUAL := '2o';
+            WHEN MES_ATUAL IN (7, 8, 9) THEN TRIMESTRE_ATUAL := '3o';
+            WHEN MES_ATUAL IN (10, 11, 12) THEN TRIMESTRE_ATUAL := '4o';
+        END CASE;
+    ELSE
+        TRIMESTRE_ATUAL := TRIMESTRE;
+    END IF;
+
+    RETURN TRIMESTRE_ATUAL;
+END;
+
 CREATE TABLE TURMA (
     ID SERIAL, -- Usando serial para automaticamente gerar um id sintético
     CURSO VARCHAR(10) NOT NULL,
     ALDEIA VARCHAR(25) NOT NULL,
-    ANO VARCHAR(4) NOT NULL CHECK(ANO <= DATE_TRUNC('YEAR', NOW())), -- Ano mas salvo como string e fazendo checagem para não ser adicionado nenhum ano maior que o ano atual
-    TRIMESTRE VARCHAR(2) NOT NULL, -- Mês mas salvo como string
+    ANO INTEGER NOT NULL CHECK(ANO <= EXTRACT(YEAR FROM CURRENT_DATE)), -- Ano mas salvo como string
+    TRIMESTRE VARCHAR(2) NOT NULL CHECK(TRIMESTRE = GET_CURRENT_TRIMESTER(ANO, TRIMESTRE)) AND CHECK (TRIMESTRE IN ('1o', '2o', '3o', '4o')), -- Usando o segundo check para casos onde o ano inserido não é o mesmo do atual, sendo assim é necessário fazer uma comparação para saber se o trimestre inserido está dentro dos valores válidos.
     HORARIO VARCHAR()
     PROFESSOR VARCHAR(11) NOT NULL,
     CONSTRAINT SK_TURMA UNIQUE(CURSO, ALDEIA, ANO, TRIMESTRE),
@@ -161,3 +186,28 @@ CREATE TABLE TURMA (
     CONSTRAINT FK_CURSO_ALDEIA FOREIGN KEY (ALDEIA) REFERENCES ALDEIA("LOCAL") ON DELETE CASCADE,
     CONSTRAINT FK_CURSO_PROF FOREIGN KEY (PROFESSOR) REFERENCES PROFESSOR(FUNCIONARIO) ON DELETE CASCADE
 );
+
+-- Código para inserção de dados nas tabelas
+-- Inserção na tabela funcionarios
+INSERT INTO 
+
+-- Inserção na tabela administrador
+-- Inserção na tabela professor
+-- Inserção na tabela idiomas_prof
+-- Inserção na tabela patrocinador
+-- Inserção na tabela contato
+-- Inserção na tabela representantes
+-- Inserção na tabela aldeia
+-- Inserção na tabela indigena
+-- Inserção na tabela idiomas_indigena
+-- Inserção na tabela patrocinio
+-- Inserção na tabela fornecimento
+-- Inserção na tabela material
+-- Inserção na tabela material_fornecimento
+-- Inserção na tabela curso
+-- Inserção na tabela pre_requisitos
+-- Inserção na tabela fornecimento_curso
+-- Inserção na tabela projeto
+-- Inserção na tabela palavras_chave
+-- Inserção na tabela fornecimento_projeto
+-- Inserção na tabela turma
