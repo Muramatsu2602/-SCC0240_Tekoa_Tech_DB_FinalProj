@@ -9,3 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY verify_table.py ./
 
 CMD ['python', 'verify_table.py']
+# CMD ["python", "main.py"]
