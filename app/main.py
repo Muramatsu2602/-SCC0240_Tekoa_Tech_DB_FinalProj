@@ -3,6 +3,8 @@
 # TODO: Tratamento de erros
 # TODO: sql injection
 
+# Usar o try except para inserção dos dados e ver os tipos de retorno de erro do psycopg2 para usar
+
 import psycopg2
 import os
 import re
