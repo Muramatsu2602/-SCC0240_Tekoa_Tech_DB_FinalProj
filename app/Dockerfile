@@ -6,7 +6,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # COPY main.py ./
-COPY verify_table.py ./
+COPY select.py ./
 
-CMD ['python', 'verify_table.py']
-# CMD ["python", "main.py"]
+CMD ['python', 'select.py']
+# , '&&', 'python', 'main.py'
