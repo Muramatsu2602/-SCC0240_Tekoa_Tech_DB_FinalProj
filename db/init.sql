@@ -258,9 +258,9 @@ INSERT INTO ALDEIA("LOCAL", IDIOMA_OFICIAL, NUM_MORADORES, ETNIA) VALUES ('(-42.
 
 -- Inserção na tabela indigena
 INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('90462389147', '12/07/1990', '289305671034567', 'Aiyra', 'Male', '(-16.2350, 145.3170)');
-INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('58702149856', '28/03/1985', '405672918345678', 'Jaciara', 'Female', '(-42.8741, -72.6267)');
-INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('71593468012', '05/09/1978', '512346789056789', 'Jaguar', 'Male', '(-0.7893, 21.4294)');
-INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('40216735899', '21/11/1993', '723456901267890', 'Iara', 'Female', '(48.4700, 8.2107)');
+INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('58702149856', '28/03/1985', '405672918345678', 'Jaciara', 'Female', '(-16.2350, 145.3170)');
+INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('71593468012', '05/09/1978', '512346789056789', 'Jaguar', 'Male', '(-16.2350, 145.3170)');
+INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('40216735899', '21/11/1993', '723456901267890', 'Iara', 'Female', '(-16.2350, 145.3170)');
 INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('86145927340', '08/06/1982', '839012345678901', 'Kariri', 'Male', '(60.2269, -115.2644)');
 INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('13972584690', '17/02/1998', '945678912389012', 'Mayumi', 'Female', '(10.3018, -84.8255)');
 INSERT INTO INDIGENA(CPF, DATA_NASC, RANI, NOME, SEXO, ALDEIA) VALUES ('28941657320', '04/12/1975', '156789023490123', 'Yaci', 'Male', '(55.5100, -133.4380)');
@@ -540,13 +540,13 @@ INSERT INTO ALUNO_TURMA(TURMA, ALUNO, APROVADO) VALUES ('4', '17842596304', 'NO'
 
 SELECT F.PATROCINIO, F."DATA" FROM FORNECIMENTO F JOIN FORNECIMENTO_CURSO FC ON F.PATROCINIO = FC.FORNECIMENTO JOIN TURMA T ON FC.CURSO = T.CURSO WHERE CAST(T.ANO AS INTEGER) % 2 = 0
 
--- 2) Dado uma aldeia X (ou todas sei lá) recuperar quem foi o administrador que entrou em contato com o patrocinador que patrocinou o fornecimento dos projetos dos indígenas daquela aldeia.
-
+-- 2) Dado uma aldeia X (ou todas sei lá) recuperar quem foi o administrador que entrou em contato com o patrocinador que patrocinou o fornecimento dos projetos dos indígenas daquela aldeia e as datas de contato.
+SELECT FC.NOME, TO_CHAR(C."DATA", 'DD/MM/YYYY') FROM INDIGENA I JOIN ALDEIA A ON I.ALDEIA = A."LOCAL" JOIN PROJETO P ON I.CPF = P.ALUNO JOIN FORNECIMENTO_PROJETO FP ON P.TITULO = FP.PROJETO JOIN FORNECIMENTO F ON FP.FORNECIMENTO = F.PATROCINIO JOIN PATROCINADOR PT ON F.PATROCINADOR = PT.CNPJ JOIN CONTATO C ON PT.CNPJ = C.EMPRESA JOIN ADMINISTRADOR ADM ON C.ADMINISTRADOR = ADM.CPF JOIN FUNCIONARIOS FC ON ADM.CPF = FC.CPF WHERE ALDEIA = '(-16.2350, 145.3170)'
 
 -- 3) Descobrir todos os indígenas que participaram de todas as turmas de um certo professo (divisão relacional)
 
 
 -- 4) Todos os materiais usados nos projetos e cursos em uma aldeia x
-
+-- Pegar primeiro os materiais de todos os cursos da aldeia e dar union com os materias de todos os projetos da aldeia
 
 -- 5) Todos os indígenas que fizeram projetos com um professor sem ter tido aula com o mesmo
