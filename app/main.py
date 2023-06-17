@@ -1,9 +1,7 @@
-# erros provenientes do sgbd ?
-    # colocar try catch nos execute ?
-# TODO: Tratamento de erros
-# TODO: sql injection
-
-# Usar o try except para inserção dos dados e ver os tipos de retorno de erro do psycopg2 para usar
+# TODO Pesquisar erros mais específicos
+    # subclasses precisam vir primeiro no try except
+    # podemos ter vários except
+# TODO SQL injection
 
 import psycopg2
 import os
@@ -28,12 +26,32 @@ conn = psycopg2.connect(
 # Create a cursor object to interact with the database
 cur = conn.cursor()
 
+try:
+    # Connect to the PostgreSQL database
+    conn = psycopg2.connect(
+        host=host,
+        port=port,
+        user=user,
+        password=password,
+        database=database
+    )
+
+    # Create a cursor object to interact with the database
+    cur = conn.cursor()
+
+except (psycopg2.OperationalError) as error:
+    print("Problemas na conexão com o base.")
+
+except (Exception) as error:
+    print(f"Unexpected {error=}, {type(error)=}")
+
 def print_menu():
     print("1. Inserir um indigena")
-    print("2. Consultar todos os indigenas que tiveram aula com um dado Professor") # TODO
+    print("2. Consultar todos os indigenas que tiveram aula com um dado Professor")
     print("3. Remover um indigena")
     print("4. Mostra todos os registros de indigenas na base de dados")
-    print("5. Exit")
+    print("5. Aplicar modificações na base de dados.")
+    print("6. Exit (Aplicar modificações e sair)")
 
 
 def read_cpf():
@@ -88,7 +106,6 @@ def read_aldeia():
 
 # Funcionalidade de cadasto de dados
 def insert_indigena ():
-
     cpf = read_cpf()
     data_nasc = read_data_nasc()
     rani = read_rani()
@@ -97,20 +114,22 @@ def insert_indigena ():
     aldeia = read_aldeia()
 
     try: 
-        # avoiding SQL injection
+        # Passamos todos os valores dos atributos como parâmetros nomeados. Dessa forma nos prevenimos SQL Injection
         cur.execute("INSERT INTO INDIGENA (cpf, data_nasc, rani, nome, sexo, aldeia)  VALUES (%s, %s, %s, %s, %s, %s);", (cpf, data_nasc, rani, nome, sexo, aldeia))
-    except(Exception, psycopg2.DatabaseError) as error:
-        print(error)
+    except psycopg2.IntegrityError as error:
         print("Insercao falhou.")
-        # conn.rollback()-> é necessário
-    else:
-        conn.commit() # tornando as mudanças persistentes na base -> podemos fazer aqui ?
-                                                                # Salvamos a cada inserção ou remoção, não correndo o risco
-                                                                # de perdermos o que foi feito. Está certo? ou a operação de commit é 
-                                                                # muito cara pra ficar sendo feita após cada operação
-        print("Indigena inserido com sucesso.")
+        print("Erro de integridade: ",error)
+        print("Pode haver algum problema nas chaves.")
+    except psycopg2.DataError as error:
+        print("Insercao falhou.")
+        print("Erro no formato dos dados inseridos: ", error)
+    except Exception as error:
+        print("Insercao falhou.")
+        print(f"Unexpected {error=}, {type(error)=}")
 
-# Funcionalidade de consulta ao banco ( Consulta número TODO de consultas.sql)
+    print("Indigena inserido com sucesso.")
+
+# Funcionalidade de consulta ao banco
 def query_indigena ():
     # cpf = input("Enter the cpf of the indigena  to query: ")
     # cur.execute("SELECT * FROM indigena s WHERE cpf = %s", (cpf,))
@@ -123,65 +142,79 @@ def query_indigena ():
     print("Digite o CPF do professor cuja lista de todos os alunos presentes em suas turmas vocẽ quer consultar.")
     prof = read_cpf()
 
-    cur.execute(""" SELECT DISTINCT I.CPF, I.NOME 
+    try: 
+        # Passamos o cpf do professor como um parâmetro nomeado. Dessa forma nos prevenimos SQL Injection
+        cur.execute(""" SELECT DISTINCT I.CPF, I.NOME 
                                 FROM INDIGENA I JOIN TURMA T 
                                 WHERE T.PROFESSOR = %s """,(prof,))
-
-    try:
+    
         indigenas = cur.fetchall()
-    except(Exception, psycopg2.ProgrammingError) as error:
-        print(error)
-        print("Consulta falhou")
-    else:
         for cpf,nome in indigenas:
             print(f"INDÍGENA - CPF: {cpf} NOME: {nome}")
-
+    except psycopg2.IntegrityError as error:
+        print("Consulta falhou.")
+        print("Erro de integridade: ",error)
+        print("Pode haver algum problema nas chaves.")
+    except Exception:
+        print("Consulta falhou.")
+        print(f"Unexpected {error=}, {type(error)=}")
 
 # Funcionalidade extra: remoção de indigena por CPF
 def remove_indigena ():
     cpf = read_cpf()
 
     try:
+        # Passamos o cpf do indigena como um parâmetro nomeado. Dessa forma nos prevenimos SQL Injection
         cur.execute("DELETE FROM INDIGENA WHERE cpf = %s", (cpf,))
-    except(Exception,psycopg2.DatabaseError) as error:
-        print(error)
-        print("Remocao falhou")
-        # conn.rollback() -> é necessário ?
-    else:
-        conn.commit() # tornando as mudanças persistentes na base -> mesma dúvida mencionado acima
-        print("Indigena removido com sucesso.")
+        print("Indigena removido com sucesso.")       
+    except psycopg2.IntegrityError as error:
+        print("Remocao falhou.")
+        print("Erro de integridade: ",error)
+        print("Pode haver algum problema nas chaves.")
+    except Exception:
+        print("Remocao falhou.")
+        print(f"Unexpected {error=}, {type(error)=}")
 
+# Extra: mostra todos os indígenas na base de dados
 def mostrar_indigenas():
-    cur.execute("SELECT * FROM INDIGENA;")
-
     try:
+        cur.execute("SELECT * FROM INDIGENA;")
         indigenas = cur.fetchall()
-    except(Exception, psycopg2.ProgrammingError) as error:
-        print(error)
-        print("Consulta falhou")
-    else:
         for ind in indigenas:
             print(ind)
+       
+    except psycopg2.IntegrityError as error:
+        print("Consulta falhou.")
+        print("Erro de integridade: ",error)
+        print("Pode haver algum problema nas chaves.")
+    except Exception as error:
+        print("Consulta falhou.")
+        print(f"Unexpected {error=}, {type(error)=}")
+
+def program_loop():
+    # Interactive loop
+    while True:
+        print_menu()
+        choice = input("Digite o código da operação que deseje efetuar: ")
+        if choice == "1":
+            insert_indigena()
+        elif choice == "2":
+            query_indigena()
+        elif choice == "3":
+            remove_indigena()
+        elif choice == "4":
+            mostrar_indigenas()
+        elif choice == "5":
+            conn.commit()
+        elif choice == "6":
+            conn.commit()
+            break
+        else:
+            print("Invalid choice. Please try again.")
 
 
-# Interactive loop
-while True:
-    print_menu()
-    choice = input("Digite o código da operação que deseje efetuar: ")
-    if choice == "1":
-        insert_indigena()
-    elif choice == "2":
-        query_indigena()
-    elif choice == "3":
-        remove_indigena()
-    elif choice == "4":
-        mostrar_indigenas()
-    elif choice == "5":
-        break
-    else:
-        print("Invalid choice. Please try again.")
-
-
+# Starting the execution of the program
+program_loop()
 
 # Close the cursor and connection
 cur.close()

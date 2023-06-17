@@ -1,6 +1,6 @@
 -- Criação da base de dados completa
 -- Código com os esquemas do banco
-SET TIMEZONE = 'America/Sao_Paulo'
+SET TIMEZONE = 'America/Sao_Paulo';
 
 CREATE TABLE FUNCIONARIOS (
     CPF VARCHAR(11) PRIMARY KEY,
