@@ -27,4 +27,4 @@ services:
       - db
     ports:
       - 8000:8000
-    command: bash -c "python verify_table.py && exec bash"
+    command: bash -c "python select.py && exec bash"
