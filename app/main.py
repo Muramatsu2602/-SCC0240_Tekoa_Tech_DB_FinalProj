@@ -139,6 +139,8 @@ def query_indigena ():
     # else:
     #     print("indigena  not found.")
 
+    # CPF para testar a funcionalidade 87420936501
+
     print("Digite o CPF do professor cuja lista de todos os alunos presentes em suas turmas vocẽ quer consultar.")
     prof = read_cpf()
 
