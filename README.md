@@ -3,7 +3,7 @@
 </p>
 
 # TekoaTech: Conectando as Comunidades Indígenas com o Mundo Digital
-Projeto final da disciplina de Base de Dados. Aqui desenvolvemos um SGBD completo.
+Projeto final da disciplina de Base de Dados. Aqui desenvolvemos um esquema de base de dados completo, juntamente com uma aplicação para a sua utilzação.
 
 ## Membros
 
