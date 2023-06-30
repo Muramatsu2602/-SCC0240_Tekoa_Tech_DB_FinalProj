@@ -1,12 +1,12 @@
 -- Consultas no sistema
 
 -- 1) Recuperar todas as datas dos fornecimentos atrelados aos cursos dados a turmas de anos pares em uma aldeia X.
-SELECT F.PATROCINIO, F."DATA" FROM FORNECIMENTO F
+SELECT T.CURSO, T.ANO, F.PATROCINIO, TO_CHAR(F."DATA", 'DD/MM/YYYY') FROM FORNECIMENTO F
     JOIN FORNECIMENTO_CURSO FC ON F.PATROCINIO = FC.FORNECIMENTO
     JOIN TURMA T ON FC.CURSO = T.CURSO
     WHERE CAST(T.ANO AS INTEGER) % 2 = 0 AND T.ALDEIA = '(-0.7893, 21.4294)';
 
--- 2) Dado uma aldeia X (ou todas sei lá) recuperar quem foi o administrador que entrou em contato com o patrocinador que patrocinou o fornecimento dos projetos dos indígenas daquela aldeia e as datas de contato.
+-- 2) Dado uma aldeia X recuperar quem foi o administrador que entrou em contato com o patrocinador que patrocinou o fornecimento dos projetos dos indígenas daquela aldeia e as datas de contato.
 SELECT FC.NOME, TO_CHAR(C."DATA", 'DD/MM/YYYY') FROM INDIGENA I
     JOIN ALDEIA A ON I.ALDEIA = A."LOCAL"
     JOIN PROJETO P ON I.CPF = P.ALUNO
