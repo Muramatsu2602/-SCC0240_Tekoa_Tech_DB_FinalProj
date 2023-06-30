@@ -1,8 +1,3 @@
-# TODO Pesquisar erros mais específicos
-    # subclasses precisam vir primeiro no try except
-    # podemos ter vários except
-# TODO SQL injection
-
 import psycopg2
 import os
 import re
@@ -64,12 +59,6 @@ def read_cpf():
 
 def read_data_nasc():
     data_nasc = input("Digite a data de nascimento no formato dd/mm/yyyy: ")
-    # validate = re.search('(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}', data_nasc)
-    # while validate == None:
-    #     print("Data inválida. Digite a data no formato correto: ")
-    #     data_nasc = input("Digite a data de nascimento no formato dd/mm/yyyy: ")
-    #     validate = re.search('(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}', data_nasc)
-
     return data_nasc
 
 def read_rani():
@@ -131,16 +120,6 @@ def insert_indigena ():
 
 # Funcionalidade de consulta ao banco
 def query_indigena ():
-    # cpf = input("Enter the cpf of the indigena  to query: ")
-    # cur.execute("SELECT * FROM indigena s WHERE cpf = %s", (cpf,))
-    # indigena  = cur.fetchone() -> usar fetchone() ou fetchall() dependendo da consulta
-    # if indigena :
-    #     print(f"indigena  found: {indigena }")
-    # else:
-    #     print("indigena  not found.")
-
-    # CPF para testar a funcionalidade 87420936501
-
     print("Digite o CPF do professor cuja lista de todos os alunos presentes em suas turmas vocẽ quer consultar.")
     prof = read_cpf()
 
