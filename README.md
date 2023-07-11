@@ -19,5 +19,4 @@ Levar acesso à internet ao povo indígena no Brasil é uma questão crucial par
 
 ## Agradecimentos
 
-# Implantação da base de dados e implementação do Sistema
-
+Gostaríamos de agradecer à Profa. Elaine bem como o monitor Afonso que tanto nos auxiliou no desenvolvimento deste projeto.
